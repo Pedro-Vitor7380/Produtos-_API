@@ -1,0 +1,83 @@
+@host = http://localhost:5267
+
+### ==========================================
+### 1. PRODUTOS (ProdutosController)
+### ==========================================
+
+### Listar todos os produtos do estoque
+GET {{host}}/api/produtos
+Accept: application/json
+
+###
+
+### Cadastrar um novo produto no estoque
+POST {{host}}/api/produtos
+Content-Type: application/json
+
+{
+  "id": "4",
+  "nome": "Teclado Mecanico RGB",
+  "price": 250.00
+}
+
+###
+
+### Atualizar os dados de um produto existente
+PUT {{host}}/api/produtos/4
+Content-Type: application/json
+
+{
+  "id": "4",
+  "nome": "Teclado Mecanico RGB - Switch Blue",
+  "price": 279.90
+}
+
+###
+
+### Deletar um produto do estoque pelo ID
+DELETE {{host}}/api/produtos/4
+
+###
+
+
+### ==========================================
+### 2. ITENS DO CARRINHO (ItemController)
+### ==========================================
+
+### Criar um item para ser usado no fluxo
+POST {{host}}/api/item
+Content-Type: application/json
+
+{
+  "Id": "1",
+  "IdProduto": "Celular POCO x6",
+  "Quantidade": 2
+}
+
+###
+
+
+### ==========================================
+### 3. PEDIDO COMPLETO (PedidoController)
+### ==========================================
+
+### Obter todos os itens que estão dentro do pedido
+GET {{host}}/api/pedido
+Accept: application/json
+
+###
+
+### Adicionar um item ao pedido
+POST {{host}}/api/pedido
+Content-Type: application/json
+
+{
+  "idProduto": "POCO_X6",
+  "quantidade": 2,
+  "precoUnitario": 1870.99/
+}
+
+###
+
+### Remover o item do pedido passando o idProduto na URL
+DELETE {{host}}/api/pedido/POCO_X6
