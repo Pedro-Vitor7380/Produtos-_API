@@ -5,7 +5,7 @@ using Api_Produtos.Repository;
 namespace Api_Produtos.Controller;
 
 [ApiController]
-[Route("api/controller")]
+[Route("api/[controller]")] 
 public class PedidoController : ControllerBase
 {
     private readonly PedidoRepository _repository;
