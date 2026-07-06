@@ -17,6 +17,8 @@ builder.Services.AddScoped<Api_Produtos.Repository.ProdutoRepository>();
 builder.Services.AddScoped<Api_Produtos.Repository.ItemRepository>();
 builder.Services.AddScoped<Api_Produtos.Repository.PedidoRepository>();
 
+builder.Services.AddScoped<Api_Produtos.Application.ProdutoApplication>();
+
 
 builder.Services.AddOpenApi();
 

@@ -5,8 +5,12 @@ namespace Api_Produtos.Application;
 
 public class ProdutoApplication
 {
-    private readonly ProdutoRepository _repository = new ProdutoRepository();
+    private readonly ProdutoRepository _repository;
 
+    public ProdutoApplication (ProdutoRepository repository)
+    {
+        _repository = repository;
+    }
 
     public List<Produto> ListarEstoque()
     {

@@ -4,7 +4,7 @@
 
 public class Pedido
 {
-    public string IdPedido { get; set; }
+    public string Id { get; set; }
     public string? Cliente { get; set; }
     public List<Item> Itens { get; set; } = new List<Item>();
     public decimal ValorTotal { get; set; }
@@ -16,7 +16,7 @@ public class Pedido
     }
     public Pedido(string? cliente)
     {
-        IdPedido = Guid.NewGuid().ToString();
+        Id = Guid.NewGuid().ToString();
         Cliente = cliente;
         
     }

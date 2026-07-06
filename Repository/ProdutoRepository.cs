@@ -1,30 +1,32 @@
-﻿using Api_Produtos.Models;
+﻿using Api_Produtos.data;
+using Api_Produtos.Models;
 using System.Linq;
 
 namespace Api_Produtos.Repository;
 
 public class ProdutoRepository
 {
-    private static List<Produto> _estoque = new List<Produto>()
+    private readonly AppDbContext _context;
+
+    public ProdutoRepository(AppDbContext context)
     {
-        new Produto("Celular POCO x6", 1870.99m),
-        new Produto("Fone Bluetooth Xiaomi",120m),
-        new Produto("patinete eletrico",3000m)
-    };
+        _context = context;
+    }
 
     public List<Produto> MostrarEstoque()
     {
-        return _estoque;
+        return _context.Produtos.ToList();
     }
 
     public Produto? BuscarPorId(string id)
     {
-        return _estoque.FirstOrDefault(p => p.Id == id);
+        return _context.Produtos.FirstOrDefault(p => p.Id == id);
     }
 
     public void AdicionarAoEstoque(Produto novoProduto)
     {
-        _estoque.Add(novoProduto);
+        _context.Produtos.Add(novoProduto);
+        _context.SaveChanges();
     }
 
     public void atualizarProduto(Produto produtoAtualizado)
@@ -34,6 +36,9 @@ public class ProdutoRepository
         {
             ProdutoAntigo.Nome = produtoAtualizado.Nome;
             ProdutoAntigo.Price = produtoAtualizado.Price;
+
+            _context.Produtos.Update(ProdutoAntigo);
+            _context.SaveChanges();
         }
     }
 
@@ -42,7 +47,8 @@ public class ProdutoRepository
         var produto = BuscarPorId(id);
             if (produto != null)
         {
-            _estoque.Remove(produto);
+            _context.Produtos.Remove(produto);
+            _context.SaveChanges();
         }
     }
 }

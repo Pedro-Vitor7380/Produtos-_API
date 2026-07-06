@@ -9,7 +9,12 @@ namespace Api_Produtos.Controllers;
 [Route("api/[controller]")]
 public class ProdutosController : ControllerBase
 {
-    private readonly ProdutoApplication _application = new ProdutoApplication();
+    private readonly ProdutoApplication _application;
+
+    public ProdutosController(ProdutoApplication application)
+    {
+        _application = application;
+    }
 
     [HttpGet]
     public ActionResult<List<Produto>> ObterEstoque()
