@@ -72,7 +72,7 @@ POST {{host}}/api/pedido
 Content-Type: application/json
 
 {
-  "id": "item_01",
+  "id": "item_06231",
   "idProduto": "POCO_X6",
   "quantidade": 2,
   "precoUnitario": 1870.99

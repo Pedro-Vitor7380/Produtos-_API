@@ -1,6 +1,7 @@
 ﻿using Api_Produtos.Models;
 using Api_Produtos.Repository;
 using Api_Produtos.Application;
+using Api_Produtos.data;
 
 
 namespace Api_Produtos.Repository
@@ -10,27 +11,32 @@ namespace Api_Produtos.Repository
     {
         private readonly ItemRepository _itemRepository;
         private readonly ProdutoRepository _produtoRepository;
-        private List<Item> _itens = new List<Item>();
-        public PedidoRepository(ItemRepository itemRepository, ProdutoRepository produtoRepository)
+
+
+        private readonly AppDbContext _context;
+
+        public PedidoRepository(AppDbContext context)
         {
-            _itemRepository = itemRepository;
-            _produtoRepository = produtoRepository;
+            _context = context;
         }
         public void AdicionarAoPedido(Item item)
         {
-            _itens.Add(item);
+            _context.Items.Add(item);
+            _context.SaveChanges();
         }
         public List<Item> mostrarItensdoPedido()
         {
-            return _itens;
+            return _context.Items.ToList();
+
         }
         public void DeletarItensDoPedido(string idProduto)
         {
             
-            var produtoExcluir = _itens.FirstOrDefault(i => i.IdProduto == idProduto);
+            var produtoExcluir = _context.Items.FirstOrDefault(i => i.IdProduto == idProduto);
             if (produtoExcluir != null)
             {
-                _itens.Remove(produtoExcluir);
+                _context.Items.Remove(produtoExcluir);
+                _context.SaveChanges();
             }
         }
 
