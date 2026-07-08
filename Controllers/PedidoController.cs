@@ -24,14 +24,18 @@ public class PedidoController : ControllerBase
         return Ok(_repository.mostrarItensdoPedido());
     }
     [HttpPost]
-    public IActionResult AdicionarItemAoPedido(Item novoItem)
+    public IActionResult post([FromBody] Pedido pedido)
     {
-        if (novoItem == null || string.IsNullOrEmpty(novoItem.Id))
+        try
         {
-            return BadRequest("Dados Invalidos");
+            _repository.FecharPedido(pedido);
+            return Ok(new {mensagem = "Pedido Fechado e carrinho finalizado com sucesso"});
         }
-        _repository.AdicionarAoPedido(novoItem);
-        return Ok();
+        catch (Exception ex)
+        {
+            return BadRequest(new { erro = ex.Message });
+        }
+        
     }
 
     [HttpDelete("{idProduto}")]

@@ -15,27 +15,27 @@ POST {{host}}/api/produtos
 Content-Type: application/json
 
 {
-  "id": "4",
-  "nome": "Teclado Mecanico RGB",
-  "price": 250.00
+  "id": "POCO_X6",
+  "nome": "Celular POCO X6",
+  "preco": 1800.00
 }
 
 ###
 
 ### Atualizar os dados de um produto existente
-PUT {{host}}/api/produtos/4
+PUT {{host}}/api/produtos/POCO_X6
 Content-Type: application/json
 
 {
-  "id": "4",
-  "nome": "Teclado Mecanico RGB - Switch Blue",
-  "price": 279.90
+  "id": "POCO_X6",
+  "nome": "Celular POCO X6 Pro",
+  "preco": 1850.00
 }
 
 ###
 
 ### Deletar um produto do estoque pelo ID
-DELETE {{host}}/api/produtos/4
+DELETE {{host}}/api/produtos/POCO_X6
 
 ###
 
@@ -45,12 +45,13 @@ DELETE {{host}}/api/produtos/4
 ### ==========================================
 
 ### Criar um item para ser usado no fluxo
+# Nota: Repare que agora usamos o ID correto do produto "POCO_X6"
 POST {{host}}/api/item
 Content-Type: application/json
 
 {
-  "Id": "1",
-  "IdProduto": "Celular POCO x6",
+  "Id": "item_001",
+  "IdProduto": "POCO_X6",
   "Quantidade": 2
 }
 
@@ -67,15 +68,13 @@ Accept: application/json
 
 ###
 
-### Adicionar um item ao pedido
+### Adicionar um item ao pedido (Fechar o Pedido)
+# Nota: Passamos apenas o ID do pedido para disparar o fechamento do carrinho
 POST {{host}}/api/pedido
 Content-Type: application/json
 
 {
-  "id": "item_06231",
-  "idProduto": "POCO_X6",
-  "quantidade": 2,
-  "precoUnitario": 1870.99
+  "id": "pedido_final_001"
 }
 
 ###

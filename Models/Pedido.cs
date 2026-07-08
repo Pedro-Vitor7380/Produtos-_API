@@ -2,26 +2,33 @@
 
 
 
+using System;
+using System.Collections.Generic;
+
 public class Pedido
 {
-    public string Id { get; set; }
-    public string? Cliente { get; set; }
+    public string Id { get; set; } // Representa o seu pedido_id
+    public string? Cliente { get; set; } // Cliente (pode deixar um padrão ou receber no JSON
+    public DateTime DataPedido { get; set; }
+    public double ValorTotal { get; set; }
     public List<Item> Itens { get; set; } = new List<Item>();
-    public decimal ValorTotal { get; set; }
 
 
     public Pedido()
     {
 
     }
+
+
+
     public Pedido(string? cliente)
     {
         Id = Guid.NewGuid().ToString();
         Cliente = cliente;
-        
+
     }
 
-        public void AdicionarItemAoPedido(Item novoItem)
+    public void AdicionarItemAoPedido(Item novoItem)
     {
         Itens.Add(novoItem);
     }
@@ -38,13 +45,13 @@ public class Pedido
     }
     public decimal CalcularTotal()
     {
-        decimal total = 0;
+        double total = 0;
         foreach (var item in Itens)
         {
             total += item.valorTotal;
         }
         ValorTotal = total;
-        return ValorTotal;
+        return (decimal)ValorTotal;
     }
 
 }
