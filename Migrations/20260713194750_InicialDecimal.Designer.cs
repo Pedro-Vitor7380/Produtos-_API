@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api_Produtos.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260710160050_AlinhamentoFinalTiposDouble")]
-    partial class AlinhamentoFinalTiposDouble
+    [Migration("20260713194750_InicialDecimal")]
+    partial class InicialDecimal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

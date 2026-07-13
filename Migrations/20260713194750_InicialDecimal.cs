@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Api_Produtos.Migrations
 {
     /// <inheritdoc />
-    public partial class CriacaoDoBanco : Migration
+    public partial class InicialDecimal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +17,8 @@ namespace Api_Produtos.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Cliente = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ValorTotal = table.Column<decimal>(type: "decimal(18,0)", nullable: false)
+                    DataPedido = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ValorTotal = table.Column<decimal>(type: "decimal(38,17)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,7 +45,8 @@ namespace Api_Produtos.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdProduto = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantidade = table.Column<int>(type: "int", nullable: false),
-                    valorTotal = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
+                    valorTotal = table.Column<decimal>(type: "decimal(38,17)", nullable: false),
+                    PrecoUnitario = table.Column<double>(type: "float", nullable: false),
                     PedidoId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
