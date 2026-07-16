@@ -26,6 +26,17 @@ public class PedidoController : ControllerBase
     [HttpPost]
     public IActionResult post([FromBody] Pedido pedido)
     {
+
+        if (string.IsNullOrEmpty(pedido.Cliente))
+        {
+            return BadRequest(new { erro = "O nome do cliente é necessario para fechar o pedido " });
+        }
+
+        if (pedido.Itens == null|| pedido.Itens.Count == 0)
+        {
+            return BadRequest(new { erro = "Não é possível fechar um pedido sem itens no carrinho." });
+        }
+
         try
         {
             _repository.FecharPedido(pedido);
@@ -33,7 +44,7 @@ public class PedidoController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { erro = ex.Message });
+            return BadRequest(new { erro = "Erro interno ao processar pedido: " + ex.Message });
         }
         
     }

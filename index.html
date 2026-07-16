@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce - Fechamento de Pedido</title>
+    <!-- Tailwind CSS para deixar a tela bonita sem precisar digitar CSS manual -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+
+    <div class="bg-white p-8 rounded-xl shadow-md max-w-md w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">🛒 Fechar Pedido</h1>
+
+        <!-- Formulário -->
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Nome do Cliente</label>
+                <input type="text" id="clienteInput" placeholder="Ex: Mariana Souza"
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">ID do Pedido</label>
+                <input type="text" id="pedidoIdInput" placeholder="Ex: pedido_12345"
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <button onclick="enviarPedido()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                Enviar para o Banco
+            </button>
+        </div>
+
+        <!-- Área de Resultados / Feedback -->
+        <div id="resultado" class="mt-6 hidden">
+            <h2 class="text-lg font-semibold mb-2" id="resultadoTitulo"></h2>
+            <pre id="jsonResponse" class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-xs max-h-60"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Altere para a porta exata que a sua API C# está rodando (ex: https://localhost:5267 ou http://localhost:5267)
+        const API_URL = "http://localhost:5267/api/produtos"; // Ajuste se a rota do fechamento for diferente!
+
+        async function enviarPedido() {
+            const cliente = document.getElementById('clienteInput').value;
+            const pedidoId = document.getElementById('pedidoIdInput').value;
+            const resultadoDiv = document.getElementById('resultado');
+            const titulo = document.getElementById('resultadoTitulo');
+            const jsonPre = document.getElementById('jsonResponse');
+
+            resultadoDiv.classList.remove('hidden');
+            titulo.className = "text-lg font-semibold mb-2 text-blue-600";
+            titulo.innerText = "Processando...";
+            jsonPre.innerText = "";
+
+            // Simulando um payload de teste para fechar o pedido (com itens fictícios para teste)
+            const payload = {
+                id: pedidoId,
+                cliente: cliente,
+                itens: [
+                    { id: "item_teste_01", idProduto: "POCO_X7", quantidade: 1, valorTotal: 1800, precoUnitario: 1800, pedidoId: pedidoId }
+                ]
+            };
+
+            try {
+                const response = await fetch(API_URL, { // Altere a URL aqui caso o endpoint de fechar pedido seja diferente de /api/produtos
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    titulo.className = "text-lg font-semibold mb-2 text-green-600";
+                    titulo.innerText = "✅ Pedido Salvo no Banco!";
+                    jsonPre.innerText = JSON.stringify(data, null, 2);
+                    jsonPre.className = "bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-xs max-h-60";
+                } else {
+                    titulo.className = "text-lg font-semibold mb-2 text-red-600";
+                    titulo.innerText = "❌ Erro de Validação (400 Bad Request)";
+                    jsonPre.innerText = JSON.stringify(data, null, 2);
+                    jsonPre.className = "bg-gray-900 text-red-400 p-4 rounded-lg overflow-x-auto text-xs max-h-60";
+                }
+
+            } catch (error) {
+                titulo.className = "text-lg font-semibold mb-2 text-red-600";
+                titulo.innerText = "🚨 Erro de Conexão com a API";
+                jsonPre.innerText = "Verifique se a API C# está rodando e se a URL e portas estão corretas.";
+            }
+        }
+    </script>
+</body>
+</html>
