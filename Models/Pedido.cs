@@ -10,7 +10,7 @@ public class Pedido
     public string Id { get; set; } // Representa o seu pedido_id
     public string? Cliente { get; set; } // Cliente (pode deixar um padrão ou receber no JSON
     public DateTime DataPedido { get; set; }
-    public double ValorTotal { get; set; }
+    public decimal ValorTotal { get; set; }
     public List<Item> Itens { get; set; } = new List<Item>();
 
 
@@ -45,7 +45,7 @@ public class Pedido
     }
     public decimal CalcularTotal()
     {
-        double total = 0;
+        decimal total = 0;
         foreach (var item in Itens)
         {
             total += item.valorTotal;

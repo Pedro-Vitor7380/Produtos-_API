@@ -15,9 +15,9 @@ POST {{host}}/api/produtos
 Content-Type: application/json
 
 {
-  "id": "POCO_X6",
-  "nome": "Celular POCO X6",
-  "preco": 1800.00
+  "id": "POCO_X7",
+  "nome": "Celular POCO X7",
+  "price": 1800.00
 }
 
 ###
@@ -29,13 +29,13 @@ Content-Type: application/json
 {
   "id": "POCO_X6",
   "nome": "Celular POCO X6 Pro",
-  "preco": 1850.00
+  "price": 1850.00
 }
 
 ###
 
 ### Deletar um produto do estoque pelo ID
-DELETE {{host}}/api/produtos/POCO_X6
+DELETE {{host}}/api/produtos/POCO_X7
 
 ###
 
@@ -50,9 +50,9 @@ POST {{host}}/api/item
 Content-Type: application/json
 
 {
-  "Id": "item_001",
-  "IdProduto": "POCO_X6",
-  "Quantidade": 2
+  "Id": "item_087771",
+  "IdProduto": "POCO_X7",
+  "Quantidade": 7
 }
 
 ###
@@ -74,10 +74,11 @@ POST {{host}}/api/pedido
 Content-Type: application/json
 
 {
-  "id": "pedido_final_001"
+  "id": "pedido_final_0817722",
+  "cliente": "Mariana Souza"
 }
 
 ###
 
 ### Remover o item do pedido passando o idProduto na URL
-DELETE {{host}}/api/pedido/POCO_X6
+DELETE {{host}}/api/pedido/POCO_X7

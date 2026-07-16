@@ -19,6 +19,8 @@ namespace Api_Produtos.Repository
             if (produtoDoEstoque != null)
             {
                 item.PrecoUnitario = produtoDoEstoque.Price;
+
+                item.valorTotal = item.Quantidade * item.PrecoUnitario;
             }
             else
             {

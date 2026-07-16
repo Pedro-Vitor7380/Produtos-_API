@@ -8,8 +8,8 @@ public class Item
     public string Id { get; set; }
     public string IdProduto { get; set; }
     public int Quantidade { get; set; }
-    public double valorTotal { get; set; }
-    public double PrecoUnitario { get; set; }
+    public decimal valorTotal { get; set; }
+    public decimal PrecoUnitario { get; set; }
     public string? PedidoId { get; set; }
 
 

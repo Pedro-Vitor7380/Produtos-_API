@@ -21,7 +21,7 @@ namespace Api_Produtos.Repository
         public void FecharPedido(Pedido pedido)
         {
             // 1. Pega os itens que estão no carrinho (onde o PedidoId ainda está vazio ou nulo)
-            var itensDoCarrinho = _context.Items.Where(i => i.PedidoId == null|| i.PedidoId=="").ToList(); 
+            var itensDoCarrinho = _context.Items.Where(i => i.PedidoId == null || i.PedidoId == "").ToList();
 
             if (itensDoCarrinho.Count == 0)
             {
@@ -29,12 +29,20 @@ namespace Api_Produtos.Repository
             }
 
             // 2. Calcula o valor total
-            double totalDoPedido = 0;
+            decimal totalDoPedido = 0;
             foreach (var item in itensDoCarrinho)
             {
-                totalDoPedido += item.Quantidade * item.PrecoUnitario;
+                var produto = _context.Produtos.FirstOrDefault(p => p.Id == item.IdProduto);
 
-                // Vincular esse item ao Pedido atual!
+                if (produto != null)
+                {
+                    item.PrecoUnitario = produto.Price;
+                }
+
+                // ─── ADICIONE ESTA LINHA AQUI ───
+                item.valorTotal = item.Quantidade * item.PrecoUnitario;
+
+                totalDoPedido += item.valorTotal; // Soma o total do item direto no total do pedido!
                 item.PedidoId = pedido.Id;
             }
 

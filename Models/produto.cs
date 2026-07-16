@@ -5,7 +5,7 @@ public class Produto
 {
     public string Id { get; set; }
     public string Nome { get; set; }
-    public double Price { get; set; }
+    public decimal Price { get; set; }
  
     public Produto()
     {
@@ -15,6 +15,6 @@ public class Produto
     {
         Id = Guid.NewGuid().ToString();
         Nome = nome;
-        Price = (double)price;
+        Price = (decimal)price;
     }
 }

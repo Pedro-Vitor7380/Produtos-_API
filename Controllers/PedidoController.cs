@@ -29,7 +29,7 @@ public class PedidoController : ControllerBase
         try
         {
             _repository.FecharPedido(pedido);
-            return Ok(new {mensagem = "Pedido Fechado e carrinho finalizado com sucesso"});
+            return Ok(pedido);
         }
         catch (Exception ex)
         {

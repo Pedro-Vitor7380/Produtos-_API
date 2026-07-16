@@ -18,7 +18,7 @@ public class ProdutosController : ControllerBase
 
     [HttpGet]
     public ActionResult<List<Produto>> ObterEstoque()
-    {       
+    {
         return Ok(_application.ListarEstoque());
     }
 
