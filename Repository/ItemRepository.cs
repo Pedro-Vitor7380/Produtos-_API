@@ -1,5 +1,6 @@
 ﻿using Api_Produtos.Models;
 using Api_Produtos.data;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api_Produtos.Repository
 {
@@ -15,6 +16,11 @@ namespace Api_Produtos.Repository
         public void AdicionarAoItem(Item item)
         {
             var produtoDoEstoque = _context.Produtos.FirstOrDefault(x => x.Id == item.IdProduto);
+
+            if (item.PrecoUnitario!= produtoDoEstoque.Price)
+            {
+                return
+            }
 
             if (produtoDoEstoque != null)
             {

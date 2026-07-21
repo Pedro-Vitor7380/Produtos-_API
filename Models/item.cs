@@ -24,5 +24,6 @@ public class Item
         IdProduto = produto.Id;
         Quantidade = quantidade;
         valorTotal = produto.Price * quantidade;
+        PrecoUnitario = produto.Price;
     }
 }
