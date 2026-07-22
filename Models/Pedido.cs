@@ -1,37 +1,30 @@
-﻿namespace Api_Produtos.Models; // Trocando o d extra pelo e
-
-
-
-using System;
-using System.Collections.Generic;
+﻿namespace Api_Produtos.Models;
 
 public class Pedido
 {
-    public string Id { get; set; } // Representa o seu pedido_id
-    public string? Cliente { get; set; } // Cliente (pode deixar um padrão ou receber no JSON
-    public DateTime DataPedido { get; set; }
+    public string Id { get; set; }
+    public string? Cliente { get; set; }
+    public DateTime DataPedido { get; set; } = DateTime.Now;
     public decimal ValorTotal { get; set; }
     public List<Item> Itens { get; set; } = new List<Item>();
 
-
+    // Construtor padrão limpo (essencial para o JSON binding funcionar)
     public Pedido()
     {
-
     }
 
-
-
-    public Pedido(string? cliente)
+    // Se quiser manter o outro construtor, repasse a inicialização da lista
+    public Pedido(string? cliente) : this()
     {
         Id = Guid.NewGuid().ToString();
         Cliente = cliente;
-
     }
 
     public void AdicionarItemAoPedido(Item novoItem)
     {
         Itens.Add(novoItem);
     }
+
     public void MostrarItensPedido()
     {
         Console.WriteLine($"Pedido do {Cliente}");

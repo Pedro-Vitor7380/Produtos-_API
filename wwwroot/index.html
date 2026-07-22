@@ -35,7 +35,7 @@
                     <input type="text" id="itemId" placeholder="ID Item (ex: item_1)" class="p-2 border rounded text-xs">
                     <input type="text" id="prodId" placeholder="ID Prod (ex: POCO_X7)" class="p-2 border rounded text-xs">
                     <input type="number" id="qtd" placeholder="Qtd" value="1" class="p-2 border rounded text-xs">
-                    <input type="number" id="preco" placeholder="Preço (ex: 1800)" class="p-2 border rounded text-xs">
+                    <input type="number" id="preco" value="1000" readonly class="p-2 border rounded text-xs bg-gray-100 cursor-not-allowed">
                 </div>
                 <button onclick="adicionarItem()" class="w-full bg-gray-800 text-white text-xs py-2 rounded hover:bg-black transition">
                     + Adicionar Item ao Carrinho
@@ -70,9 +70,7 @@
 
     <!-- JAVASCRIPT QUE FAZ A MÁGICA -->
     <script>
-        // Mantenha o endereço idêntico ao do seu teste.http
-        const API_URL = "http://localhost:5267/api/pedidos"; // <- Se a rota do pedido for /api/pedido, altere aqui!
-
+        const API_URL = "/api/pedido";
         let carrinho = [];
 
         function adicionarItem() {
@@ -83,25 +81,24 @@
             const pedidoId = document.getElementById('pedidoId').value;
 
             if (!prodId || preco <= 0) {
-                alert("Preencha o ID do Produto e o Preço corretamente!");
+                alert("Preencha o ID do Produto!");
                 return;
             }
 
+            // Criando o item com a PRIMEIRA LETRA MAIÚSCULA para bater com o C#
             const novoItem = {
-                id: itemId,
-                idProduto: prodId,
-                quantidade: qtd,
-                precoUnitario: preco,
-                valorTotal: qtd * preco,
-                pedidoId: pedidoId
+                Id: itemId,
+                IdProduto: prodId,
+                Quantidade: qtd,
+                PrecoUnitario: preco,
+                ValorTotal: qtd * preco,
+                PedidoId: pedidoId
             };
 
             carrinho.push(novoItem);
             atualizarLista();
 
-            // Limpa os campos de item
             document.getElementById('prodId').value = '';
-            document.getElementById('preco').value = '';
         }
 
         function atualizarLista() {
@@ -114,11 +111,11 @@
             }
 
             ul.innerHTML = carrinho.map((item, index) => `
-                    <li class="flex justify-between items-center bg-white p-1.5 rounded border">
-                        <span><b>${item.quantidade}x</b> ${item.idProduto} (R$ ${item.valorTotal})</span>
-                        <button onclick="removerItem(${index})" class="text-red-500 font-bold hover:text-red-700">✕</button>
-                    </li>
-                `).join('');
+                <li class="flex justify-between items-center bg-white p-1.5 rounded border">
+                    <span><b>${item.Quantidade}x</b> ${item.IdProduto} (R$ ${item.ValorTotal})</span>
+                    <button onclick="removerItem(${index})" class="text-red-500 font-bold hover:text-red-700">✕</button>
+                </li>
+            `).join('');
         }
 
         function removerItem(index) {
@@ -130,10 +127,20 @@
             const output = document.getElementById('jsonOutput');
             const badge = document.getElementById('statusBadge');
 
+            // Converte os itens para o formato exato da classe Item.cs
+            const itensFormatados = carrinho.map(i => ({
+                Id: String(i.Id || i.id),
+                IdProduto: String(i.IdProduto || i.idProduto),
+                Quantidade: Number(i.Quantidade || i.quantidade),
+                PrecoUnitario: Number(i.PrecoUnitario || i.precoUnitario),
+                ValorTotal: Number(i.ValorTotal || i.valorTotal),
+                PedidoId: String(i.PedidoId || i.pedidoId)
+            }));
+
             const payload = {
-                id: document.getElementById('pedidoId').value,
-                cliente: document.getElementById('clienteNome').value,
-                itens: carrinho
+                Id: document.getElementById('pedidoId').value,
+                Cliente: document.getElementById('clienteNome').value,
+                Itens: itensFormatados
             };
 
             output.innerText = "Enviando requisição...";
@@ -161,8 +168,8 @@
 
             } catch (err) {
                 badge.className = "text-xs px-2 py-1 rounded bg-yellow-600 text-white";
-                badge.innerText = "Erro de Conexão / CORS";
-                output.innerText = "Falha ao conectar na API C#.\n\nVerifique se:\n1. A API está rodando no VS Code/Visual Studio.\n2. A URL '" + API_URL + "' está correta.\n3. O CORS está configurado no Program.cs.";
+                badge.innerText = "Erro de Conexão";
+                output.innerText = "Falha ao conectar na API.";
             }
         }
     </script>

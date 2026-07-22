@@ -17,11 +17,6 @@ namespace Api_Produtos.Repository
         {
             var produtoDoEstoque = _context.Produtos.FirstOrDefault(x => x.Id == item.IdProduto);
 
-            if (item.PrecoUnitario!= produtoDoEstoque.Price)
-            {
-                return
-            }
-
             if (produtoDoEstoque != null)
             {
                 item.PrecoUnitario = produtoDoEstoque.Price;

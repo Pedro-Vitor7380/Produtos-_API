@@ -24,8 +24,10 @@ public class PedidoController : ControllerBase
         return Ok(_repository.mostrarItensdoPedido());
     }
     [HttpPost]
-    public IActionResult post([FromBody] Pedido pedido)
+    public IActionResult FecharPedido([FromBody] Pedido pedido)
     {
+        Console.WriteLine($"---> CLIENTE RECEBIDO: '{pedido?.Cliente}'");
+        Console.WriteLine($"---> QUANTIDADE DE ITENS: {pedido?.Itens?.Count ?? -1}");
 
         if (string.IsNullOrEmpty(pedido.Cliente))
         {
