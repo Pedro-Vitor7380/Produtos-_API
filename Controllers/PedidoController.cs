@@ -26,8 +26,6 @@ public class PedidoController : ControllerBase
     [HttpPost]
     public IActionResult FecharPedido([FromBody] Pedido pedido)
     {
-        Console.WriteLine($"---> CLIENTE RECEBIDO: '{pedido?.Cliente}'");
-        Console.WriteLine($"---> QUANTIDADE DE ITENS: {pedido?.Itens?.Count ?? -1}");
 
         if (string.IsNullOrEmpty(pedido.Cliente))
         {

@@ -61,14 +61,12 @@
                 <span>Retorno do C# (API)</span>
                 <span id="statusBadge" class="text-xs px-2 py-1 rounded bg-gray-700">Aguardando...</span>
             </h2>
-            <pre id="jsonOutput" class="text-green-400 text-xs font-mono flex-1 overflow-auto bg-black p-4 rounded border border-gray-800">
-// Os dados retornados pela sua Controller vão aparecer aqui em tempo real...
-            </pre>
+            <pre id="jsonOutput" class="text-green-400 text-xs font-mono flex-1 overflow-auto bg-black p-4 rounded border border-gray-800"><!--Os dados retornados pela sua Controller vão aparecer aqui em tempo real...--></pre>
         </div>
 
     </div>
 
-    <!-- JAVASCRIPT QUE FAZ A MÁGICA -->
+    <!-- JAVASCRIPT CORRIGIDO -->
     <script>
         const API_URL = "/api/pedido";
         let carrinho = [];
@@ -85,7 +83,7 @@
                 return;
             }
 
-            // Criando o item com a PRIMEIRA LETRA MAIÚSCULA para bater com o C#
+            // Objeto do Item formatado perfeitamente para a classe Item.cs
             const novoItem = {
                 Id: itemId,
                 IdProduto: prodId,
@@ -99,6 +97,7 @@
             atualizarLista();
 
             document.getElementById('prodId').value = '';
+            document.getElementById('itemId').value = '';
         }
 
         function atualizarLista() {
@@ -111,11 +110,11 @@
             }
 
             ul.innerHTML = carrinho.map((item, index) => `
-                <li class="flex justify-between items-center bg-white p-1.5 rounded border">
-                    <span><b>${item.Quantidade}x</b> ${item.IdProduto} (R$ ${item.ValorTotal})</span>
-                    <button onclick="removerItem(${index})" class="text-red-500 font-bold hover:text-red-700">✕</button>
-                </li>
-            `).join('');
+                    <li class="flex justify-between items-center bg-white p-1.5 rounded border">
+                        <span><b>${item.Quantidade}x</b> ${item.IdProduto} (R$ ${item.ValorTotal})</span>
+                        <button onclick="removerItem(${index})" class="text-red-500 font-bold hover:text-red-700">✕</button>
+                    </li>
+                `).join('');
         }
 
         function removerItem(index) {
@@ -127,20 +126,16 @@
             const output = document.getElementById('jsonOutput');
             const badge = document.getElementById('statusBadge');
 
-            // Converte os itens para o formato exato da classe Item.cs
-            const itensFormatados = carrinho.map(i => ({
-                Id: String(i.Id || i.id),
-                IdProduto: String(i.IdProduto || i.idProduto),
-                Quantidade: Number(i.Quantidade || i.quantidade),
-                PrecoUnitario: Number(i.PrecoUnitario || i.precoUnitario),
-                ValorTotal: Number(i.ValorTotal || i.valorTotal),
-                PedidoId: String(i.PedidoId || i.pedidoId)
-            }));
+            if (carrinho.length === 0) {
+                alert("Adicione pelo menos um item ao carrinho antes de enviar!");
+                return;
+            }
 
+            // Enviando o carrinho direto sem recriar objetos com erros
             const payload = {
                 Id: document.getElementById('pedidoId').value,
                 Cliente: document.getElementById('clienteNome').value,
-                Itens: itensFormatados
+                Itens: carrinho
             };
 
             output.innerText = "Enviando requisição...";
