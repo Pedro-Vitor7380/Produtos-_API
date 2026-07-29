@@ -50,7 +50,7 @@ POST {{host}}/api/item
 Content-Type: application/json
 
 {
-  "Id": "item_082277543471",
+  "Id": "item_08224775843471",
   "IdProduto": "POCO_X7",
   "Quantidade": 7
 }
@@ -74,7 +74,7 @@ POST {{host}}/api/pedido
 Content-Type: application/json
 
 {
-  "id": "pedido_final_085721453351447722",
+  "id": "pedido_final_08587721453351447722",
   "cliente": "Mariana Souzopoa"
 }
 
