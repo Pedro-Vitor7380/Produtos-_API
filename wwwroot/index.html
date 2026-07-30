@@ -8,30 +8,36 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-8">
 
-    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- PAINEL 1: CADASTRO DE PRODUTOS E ESTOQUE -->
+        <!-- PAINEL 1: GESTÃO DE PRODUTOS -->
         <div class="bg-white p-6 rounded-xl shadow-md space-y-4">
-            <h1 class="text-lg font-bold text-gray-800">📦 Gestão de Produtos</h1>
+            <h1 class="text-lg font-bold text-gray-800 flex justify-between items-center">
+                <span>📦 Gestão de Produtos</span>
+                <button onclick="carregarEstoque()" class="text-xs text-blue-600 underline font-normal">Atualizar Lista</button>
+            </h1>
 
-            <!-- Formulário de Novo Produto -->
+            <!-- Formulário de Cadastro / Edição -->
             <div class="space-y-2 bg-gray-50 p-3 rounded border">
-                <h2 class="text-xs font-bold text-gray-600 uppercase">Cadastrar Novo Produto</h2>
-                <input type="text" id="novoProdId" placeholder="ID (ex: POCO_X7)" class="w-full p-2 border rounded text-xs">
-                <input type="text" id="novoProdNome" placeholder="Nome do Produto" class="w-full p-2 border rounded text-xs">
-                <input type="number" id="novoProdPreco" placeholder="Preço (R$)" step="0.01" class="w-full p-2 border rounded text-xs">
-                <button onclick="cadastrarProduto()" class="w-full bg-emerald-600 text-white text-xs font-bold py-2 rounded hover:bg-emerald-700 transition">
-                    + Cadastrar Produto
-                </button>
+                <h2 id="tituloFormProd" class="text-xs font-bold text-gray-600 uppercase">Cadastrar Novo Produto</h2>
+                <input type="text" id="prodId" placeholder="ID (ex: POCO_X8)" class="w-full p-2 border rounded text-xs">
+                <input type="text" id="prodNome" placeholder="Nome do Produto" class="w-full p-2 border rounded text-xs">
+                <input type="number" id="prodPreco" placeholder="Preço (R$)" step="0.01" class="w-full p-2 border rounded text-xs">
+
+                <div class="flex gap-2">
+                    <button id="btnSalvarProd" onclick="salvarProduto()" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded hover:bg-emerald-700 transition">
+                        + Cadastrar Produto
+                    </button>
+                    <button id="btnCancelarEdit" onclick="limparFormProduto()" class="hidden bg-gray-400 text-white text-xs font-bold px-3 py-2 rounded hover:bg-gray-500 transition">
+                        Cancelar
+                    </button>
+                </div>
             </div>
 
-            <!-- Lista de Estoque -->
+            <!-- Lista de Estoque com Ações -->
             <div>
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-xs font-bold text-gray-500 uppercase">Estoque Disponível</h3>
-                    <button onclick="carregarEstoque()" class="text-xs text-blue-600 underline">Atualizar</button>
-                </div>
-                <ul id="listaEstoque" class="text-xs space-y-1 max-h-48 overflow-y-auto bg-gray-50 p-2 rounded border">
+                <h3 class="text-xs font-bold text-gray-500 uppercase mb-2">Estoque Disponível</h3>
+                <ul id="listaEstoque" class="text-xs space-y-2 max-h-60 overflow-y-auto bg-gray-50 p-2 rounded border">
                     <li class="text-gray-400 italic">Carregando estoque...</li>
                 </ul>
             </div>
@@ -58,7 +64,7 @@
                         <input type="number" id="qtd" value="1" min="1" class="w-full p-2 border rounded text-xs">
                     </div>
                     <div>
-                        <label class="block text-[10px] text-gray-500">Preço Unitário:</label>
+                        <label class="block text-[10px] text-gray-500">Preço Unitário (R$):</label>
                         <input type="number" id="preco" readonly class="w-full p-2 border rounded text-xs bg-gray-100 cursor-not-allowed">
                     </div>
                 </div>
@@ -68,8 +74,19 @@
                 </button>
             </div>
 
+            <!-- Itens Atuais no Carrinho com Opção de Excluir -->
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="text-xs font-bold text-gray-500 uppercase">Itens do Carrinho / Pedido</h3>
+                    <button onclick="carregarItensCarrinho()" class="text-xs text-blue-600 underline">Atualizar Carrinho</button>
+                </div>
+                <ul id="listaCarrinho" class="text-xs space-y-2 max-h-40 overflow-y-auto bg-gray-50 p-2 rounded border">
+                    <li class="text-gray-400 italic">Carregando itens...</li>
+                </ul>
+            </div>
+
             <!-- Fechamento do Pedido -->
-            <div class="space-y-2">
+            <div class="space-y-2 pt-2 border-t">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase">Nome do Cliente</label>
                     <input type="text" id="clienteNome" placeholder="Digite o nome do cliente..." class="w-full p-2 border rounded text-sm">
@@ -82,7 +99,7 @@
         </div>
 
         <!-- PAINEL 3: RESPOSTA DA API -->
-        <div class="bg-gray-900 p-6 rounded-xl shadow-md text-white flex flex-col h-full min-h-[400px]">
+        <div class="bg-gray-900 p-6 rounded-xl shadow-md text-white flex flex-col h-full min-h-[450px]">
             <h2 class="text-lg font-bold mb-2 flex justify-between items-center">
                 <span>Retorno da API</span>
                 <span id="statusBadge" class="text-xs px-2 py-1 rounded bg-gray-700">Aguardando...</span>
@@ -94,17 +111,16 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        // Altere para a porta exata onde sua API C# está rodando
-        const BASE_URL = "http://localhost:5267";
+        const BASE_URL = "https://localhost:7024";
 
         let estoqueLocal = [];
+        let editando = false;
 
-        // Executa ao carregar a página
         window.onload = () => {
             carregarEstoque();
+            carregarItensCarrinho();
         };
 
-        // Exibe respostas no painel escuro
         function exibirResposta(status, dados) {
             const statusBadge = document.getElementById('statusBadge');
             const jsonOutput = document.getElementById('jsonOutput');
@@ -118,7 +134,7 @@
         }
 
         // ==========================================
-        // 1. GESTÃO DE PRODUTOS
+        // 1. PRODUTOS (Listar, Cadastrar, Editar, Excluir)
         // ==========================================
         async function carregarEstoque() {
             try {
@@ -127,11 +143,9 @@
 
                 estoqueLocal = await response.json();
 
-                // Atualiza a lista visual
                 const listaEstoque = document.getElementById('listaEstoque');
                 listaEstoque.innerHTML = "";
 
-                // Atualiza o <select> do carrinho
                 const selectProduto = document.getElementById('selectProduto');
                 selectProduto.innerHTML = '<option value="">-- Escolha um Produto --</option>';
 
@@ -141,10 +155,19 @@
                 }
 
                 estoqueLocal.forEach(p => {
-                    // Preenche lista de estoque
+                    // Preenche lista de estoque com botões de Editar e Excluir
                     const li = document.createElement('li');
-                    li.className = "flex justify-between border-b pb-1";
-                    li.innerHTML = `<span><strong>${p.id}</strong> - ${p.nome}</span> <span class="text-emerald-600 font-bold">R$ ${p.price}</span>`;
+                    li.className = "flex justify-between items-center border-b pb-1 gap-2";
+                    li.innerHTML = `
+                            <div class="truncate">
+                                <strong>${p.id}</strong> - ${p.nome}
+                                <span class="text-emerald-600 font-bold ml-1">R$ ${p.price}</span>
+                            </div>
+                            <div class="flex gap-1 shrink-0">
+                                <button onclick="prepararEdicao('${p.id}', '${p.nome}', ${p.price})" class="bg-amber-500 text-white px-2 py-0.5 rounded text-[10px] hover:bg-amber-600">Editar</button>
+                                <button onclick="deletarProduto('${p.id}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] hover:bg-red-600">Excluir</button>
+                            </div>
+                        `;
                     listaEstoque.appendChild(li);
 
                     // Preenche select
@@ -161,37 +184,85 @@
             }
         }
 
-        async function cadastrarProduto() {
-            const id = document.getElementById('novoProdId').value;
-            const nome = document.getElementById('novoProdNome').value;
-            const price = parseFloat(document.getElementById('novoProdPreco').value);
+        async function salvarProduto() {
+            const id = document.getElementById('prodId').value;
+            const nome = document.getElementById('prodNome').value;
+            const price = parseFloat(document.getElementById('prodPreco').value);
 
             if (!id || !nome || isNaN(price)) {
                 alert("Preencha todos os campos do produto!");
                 return;
             }
 
-            const novoProduto = { id, nome, price };
+            const produtoPayload = { id, nome, price };
+            const endpoint = editando ? `${BASE_URL}/api/produtos/${id}` : `${BASE_URL}/api/produtos`;
+            const metodo = editando ? "PUT" : "POST";
 
             try {
-                const response = await fetch(`${BASE_URL}/api/produtos`, {
-                    method: "POST",
+                const response = await fetch(endpoint, {
+                    method: metodo,
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(novoProduto)
+                    body: JSON.stringify(produtoPayload)
                 });
 
-                const resultado = await response.text();
-                exibirResposta(response.status, resultado ? JSON.parse(resultado) : "Produto cadastrado!");
+                const texto = await response.text();
+                exibirResposta(response.status, texto ? (texto.startsWith("{") ? JSON.parse(texto) : texto) : "Sucesso!");
 
                 if (response.ok) {
-                    document.getElementById('novoProdId').value = "";
-                    document.getElementById('novoProdNome').value = "";
-                    document.getElementById('novoProdPreco').value = "";
+                    limparFormProduto();
                     carregarEstoque();
                 }
             } catch (erro) {
                 console.error(erro);
-                exibirResposta("ERRO", "Falha na conexão ao cadastrar produto.");
+                exibirResposta("ERRO", "Falha na conexão ao salvar produto.");
+            }
+        }
+
+        function prepararEdicao(id, nome, price) {
+            editando = true;
+            document.getElementById('prodId').value = id;
+            document.getElementById('prodId').readOnly = true; // Não altera o ID no PUT
+            document.getElementById('prodId').classList.add('bg-gray-100');
+            document.getElementById('prodNome').value = nome;
+            document.getElementById('prodPreco').value = price;
+
+            document.getElementById('tituloFormProd').innerText = "Editar Produto";
+            document.getElementById('btnSalvarProd').innerText = "Atualizar Produto";
+            document.getElementById('btnSalvarProd').className = "flex-1 bg-amber-600 text-white text-xs font-bold py-2 rounded hover:bg-amber-700 transition";
+            document.getElementById('btnCancelarEdit').classList.remove('hidden');
+        }
+
+        function limparFormProduto() {
+            editando = false;
+            document.getElementById('prodId').value = "";
+            document.getElementById('prodId').readOnly = false;
+            document.getElementById('prodId').classList.remove('bg-gray-100');
+            document.getElementById('prodNome').value = "";
+            document.getElementById('prodPreco').value = "";
+
+            document.getElementById('tituloFormProd').innerText = "Cadastrar Novo Produto";
+            document.getElementById('btnSalvarProd').innerText = "+ Cadastrar Produto";
+            document.getElementById('btnSalvarProd').className = "flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded hover:bg-emerald-700 transition";
+            document.getElementById('btnCancelarEdit').classList.add('hidden');
+        }
+
+        async function deletarProduto(id) {
+            if (!confirm(`Tem certeza que deseja excluir o produto "${id}"?`)) return;
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/produtos/${id}`, {
+                    method: "DELETE"
+                });
+
+                const texto = await response.text();
+                exibirResposta(response.status, texto);
+
+                if (response.ok) {
+                    carregarEstoque();
+                }
+            } catch (erro) {
+                console.error(erro);
+                exibirResposta("ERRO", "Erro de conexão ao deletar produto.");
             }
         }
 
@@ -207,8 +278,44 @@
         }
 
         // ==========================================
-        // 2. CARRINHO E ITEM
+        // 2. CARRINHO & ITENS (Listar, Adicionar, Excluir)
         // ==========================================
+        async function carregarItensCarrinho() {
+            try {
+                const response = await fetch(`${BASE_URL}/api/pedido`);
+                if (!response.ok) throw new Error(`Erro: ${response.status}`);
+
+                const itens = await response.json();
+                const listaCarrinho = document.getElementById('listaCarrinho');
+                listaCarrinho.innerHTML = "";
+
+                if (!itens || itens.length === 0) {
+                    listaCarrinho.innerHTML = '<li class="text-gray-400 italic">O carrinho está vazio.</li>';
+                    return;
+                }
+
+                itens.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = "flex justify-between items-center border-b pb-1 gap-2";
+                    li.innerHTML = `
+                            <div class="truncate">
+                                <strong>Prod: ${item.idProduto}</strong> (Qtd: ${item.quantidade})
+                                <span class="text-gray-600 font-bold ml-1">R$ ${item.valorTotal || item.precoUnitario * item.quantidade}</span>
+                                ${item.pedidoId ? `<span class="text-[9px] bg-gray-200 px-1 rounded block">Pedido: ${item.pedidoId}</span>` : '<span class="text-[9px] bg-amber-100 text-amber-800 px-1 rounded block">No Carrinho</span>'}
+                            </div>
+                            <button onclick="deletarItemCarrinho('${item.idProduto}')" class="bg-red-500 text-white px-2 py-0.5 rounded text-[10px] hover:bg-red-600 shrink-0">
+                                Remover
+                            </button>
+                        `;
+                    listaCarrinho.appendChild(li);
+                });
+
+            } catch (erro) {
+                console.error(erro);
+                document.getElementById('listaCarrinho').innerHTML = '<li class="text-red-400 italic">Erro ao carregar carrinho.</li>';
+            }
+        }
+
         async function adicionarItem() {
             const prodId = document.getElementById('selectProduto').value;
             const qtd = parseInt(document.getElementById('qtd').value) || 1;
@@ -235,11 +342,30 @@
                 exibirResposta(response.status, dados);
 
                 if (response.ok) {
-                    alert("Item adicionado ao carrinho!");
+                    carregarItensCarrinho();
                 }
             } catch (erro) {
                 console.error(erro);
                 exibirResposta("ERRO", "Erro de conexão ao adicionar item.");
+            }
+        }
+
+        async function deletarItemCarrinho(idProduto) {
+            if (!confirm(`Deseja remover os itens do produto "${idProduto}" do carrinho?`)) return;
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/pedido/${idProduto}`, {
+                    method: "DELETE"
+                });
+
+                exibirResposta(response.status, "Item removido do carrinho com sucesso.");
+
+                if (response.ok) {
+                    carregarItensCarrinho();
+                }
+            } catch (erro) {
+                console.error(erro);
+                exibirResposta("ERRO", "Erro ao remover item do carrinho.");
             }
         }
 
@@ -272,6 +398,7 @@
                 if (response.ok) {
                     alert("Pedido fechado com sucesso!");
                     document.getElementById('clienteNome').value = "";
+                    carregarItensCarrinho();
                 }
             } catch (erro) {
                 console.error(erro);

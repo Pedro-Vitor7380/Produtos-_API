@@ -27,7 +27,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("PermitirTudo", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
@@ -50,7 +50,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors("PermitirTudo");
 
 app.UseAuthorization();
 
