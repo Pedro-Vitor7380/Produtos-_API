@@ -1,5 +1,6 @@
-﻿using Api_Produtos.Models;
-using Api_Produtos.data;
+﻿using Api_Produtos.data;
+using Api_Produtos.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace Api_Produtos.Repository
@@ -69,6 +70,13 @@ namespace Api_Produtos.Repository
                 _context.SaveChanges();
             }
         }
+
+        public List<Pedido> ListarPedidos()
+        {
+            return _context.Pedidos.ToList();
+        }
+
+
 
     }
 }

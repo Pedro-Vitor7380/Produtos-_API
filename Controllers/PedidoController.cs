@@ -5,7 +5,7 @@ using Api_Produtos.Repository;
 namespace Api_Produtos.Controller;
 
 [ApiController]
-[Route("api/[controller]")] 
+[Route("api/[controller]")]
 public class PedidoController : ControllerBase
 {
     private readonly PedidoRepository _repository;
@@ -33,12 +33,12 @@ public class PedidoController : ControllerBase
             return BadRequest(new { erro = "O nome do cliente é necessario para fechar o pedido " });
         }
 
-        
+
 
         try
         {
 
-            
+
             _repository.FecharPedido(pedido);
             return Ok(pedido);
         }
@@ -46,7 +46,7 @@ public class PedidoController : ControllerBase
         {
             return BadRequest(new { erro = "Erro interno ao processar pedido: " + ex.Message });
         }
-        
+
     }
 
     [HttpDelete("{idProduto}")]
@@ -57,4 +57,10 @@ public class PedidoController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("Historico")]
+    public ActionResult<List<Pedido>> HistoricoDePedidos()
+    {
+        return Ok(_repository.ListarPedidos());
+    }
+  
 }
